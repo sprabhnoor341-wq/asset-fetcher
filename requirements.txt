@@ -1,8 +1,8 @@
 fastapi
-uvicorn
 requests
 python-dotenv
 jinja2
 aiofiles
 aiohttp
 openai
+uvicorn[standard]
