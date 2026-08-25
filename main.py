@@ -39,8 +39,6 @@ from llm_engine import (
 # ---------------------------------------------------------------------------
 SKETCHFAB_TOKEN = "1d08911549ac417ba68839d196823657"
 FREESOUND_API_KEY = "iGPvCX6Wh4WOLrhLomGhEvQHDRoB0JNmB4FrUwzJ"
-SKETCHFAB_TOKEN = os.getenv("SKETCHFAB_TOKEN", SKETCHFAB_TOKEN)
-FREESOUND_API_KEY = os.getenv("FREESOUND_API_KEY", FREESOUND_API_KEY)
 
 # ---------------------------------------------------------------------------
 # App setup
