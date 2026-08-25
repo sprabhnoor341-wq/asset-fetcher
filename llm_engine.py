@@ -12,9 +12,8 @@ from typing import List, Optional, Dict, Any
 
 from openai import OpenAI
 
-NVIDIA_API_KEY = os.environ.get(
-    "NVIDIA_API_KEY",
-    "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",
+NVIDIA_API_KEY =(
+    "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"
 )
 
 _client: Optional[OpenAI] = None
