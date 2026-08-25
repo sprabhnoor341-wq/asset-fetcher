@@ -1,0 +1,547 @@
+/* ============================================================
+   main.css — AI Prototype Generator
+   Premium dark theme for a developer-focused SaaS product
+   ============================================================ */
+
+/* ------------------------------------------------------------
+   1. Design Tokens
+   ------------------------------------------------------------ */
+:root {
+  /* Colors — Surfaces */
+  --color-bg: #0a0a0f;
+  --color-bg-elevated: #101016;
+  --color-panel: #14141c;
+  --color-panel-hover: #1a1a24;
+  --color-console-bg: #0c0c12;
+  --color-overlay: rgba(5, 5, 10, 0.8);
+
+  /* Colors — Borders */
+  --color-border: #23232f;
+  --color-border-strong: #2e2e3d;
+  --color-border-focus: #6366f1;
+
+  /* Colors — Text */
+  --color-text: #ededf2;
+  --color-text-secondary: #a1a1b5;
+  --color-text-muted: #63637a;
+  --color-text-inverse: #0a0a0f;
+
+  /* Colors — Accent */
+  --color-accent: #6366f1;
+  --color-accent-hover: #7c7ff5;
+  --color-accent-active: #5457e0;
+  --color-accent-subtle: rgba(99, 102, 241, 0.12);
+  --color-accent-glow: rgba(99, 102, 241, 0.35);
+
+  /* Colors — Semantic */
+  --color-success: #34d399;
+  --color-success-subtle: rgba(52, 211, 153, 0.12);
+  --color-warning: #fbbf24;
+  --color-danger: #f87171;
+
+  /* Gradients */
+  --gradient-accent: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+  --gradient-title: linear-gradient(180deg, #ffffff 0%, #b3b3c6 100%);
+  --gradient-panel-sheen: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.03) 0%,
+    rgba(255, 255, 255, 0) 60%
+  );
+
+  /* Typography */
+  --font-sans: "Inter", "SF Pro Display", -apple-system, BlinkMacSystemFont,
+    "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  --font-mono: "JetBrains Mono", "SF Mono", "Fira Code", "Cascadia Code",
+    Menlo, Consolas, monospace;
+
+  --text-xs: 0.75rem;    /* 12px */
+  --text-sm: 0.8125rem;  /* 13px */
+  --text-base: 0.9375rem;/* 15px */
+  --text-md: 1rem;       /* 16px */
+  --text-lg: 1.125rem;   /* 18px */
+  --text-2xl: 1.75rem;   /* 28px */
+  --text-3xl: 2.5rem;    /* 40px */
+
+  /* Spacing */
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-5: 1.5rem;
+  --space-6: 2rem;
+  --space-8: 3rem;
+
+  /* Radii */
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 14px;
+  --radius-xl: 20px;
+  --radius-full: 9999px;
+
+  /* Shadows */
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.4);
+  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.45);
+  --shadow-lg: 0 12px 32px rgba(0, 0, 0, 0.55);
+  --shadow-accent: 0 4px 20px var(--color-accent-glow);
+  --shadow-inset: inset 0 1px 0 rgba(255, 255, 255, 0.04);
+
+  /* Motion */
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --duration-fast: 150ms;
+  --duration-base: 250ms;
+
+  /* Layout */
+  --app-max-width: 800px;
+}
+
+/* ------------------------------------------------------------
+   2. Reset & Base
+   ------------------------------------------------------------ */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  height: 100%;
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  height: 100dvh;
+  overflow: hidden;
+  background-color: var(--color-bg);
+  background-image:
+    radial-gradient(ellipse 80% 50% at 50% -20%, rgba(99, 102, 241, 0.15), transparent),
+    radial-gradient(ellipse 60% 40% at 80% 120%, rgba(139, 92, 246, 0.08), transparent);
+  color: var(--color-text);
+  font-family: var(--font-sans);
+  font-size: var(--text-base);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+::selection {
+  background: var(--color-accent);
+  color: #ffffff;
+}
+
+/* ------------------------------------------------------------
+   3. Global Scrollbars
+   ------------------------------------------------------------ */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-border-strong) transparent;
+}
+
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--color-border-strong);
+  border-radius: var(--radius-full);
+  border: 2px solid transparent;
+  background-clip: padding-box;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-text-muted);
+  background-clip: padding-box;
+}
+
+::-webkit-scrollbar-corner {
+  background: transparent;
+}
+
+/* ------------------------------------------------------------
+   4. Main Layout
+   ------------------------------------------------------------ */
+.main-layout {
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: row;
+  min-height: 0; /* allow children to scroll */
+  width: 100%;
+}
+
+#app-wrapper {
+  flex: 1 1 auto;
+  min-width: 0;
+  max-width: var(--app-max-width);
+  margin: 0 auto;
+  padding: var(--space-8) var(--space-5);
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-6);
+}
+
+/* ------------------------------------------------------------
+   5. Header
+   ------------------------------------------------------------ */
+header {
+  text-align: center;
+  padding-top: var(--space-4);
+}
+
+header h1 {
+  font-size: var(--text-3xl);
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  line-height: 1.15;
+  background: var(--gradient-title);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+  margin-bottom: var(--space-3);
+}
+
+header p {
+  max-width: 56ch;
+  margin: 0 auto;
+  font-size: var(--text-md);
+  color: var(--color-text-secondary);
+  line-height: 1.7;
+}
+
+/* ------------------------------------------------------------
+   6. Input Card
+   ------------------------------------------------------------ */
+.input-card {
+  position: relative;
+  background: var(--color-panel);
+  background-image: var(--gradient-panel-sheen);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-xl);
+  padding: var(--space-5);
+  box-shadow: var(--shadow-md), var(--shadow-inset);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+/* Textarea */
+#prompt {
+  width: 100%;
+  min-height: 180px;
+  resize: vertical;
+  padding: var(--space-4);
+  background: var(--color-bg-elevated);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  color: var(--color-text);
+  font-family: var(--font-sans);
+  font-size: var(--text-base);
+  line-height: 1.7;
+  outline: none;
+  transition:
+    border-color var(--duration-base) var(--ease-out),
+    box-shadow var(--duration-base) var(--ease-out),
+    background-color var(--duration-base) var(--ease-out);
+}
+
+#prompt::placeholder {
+  color: var(--color-text-muted);
+}
+
+#prompt:hover {
+  border-color: var(--color-border-strong);
+}
+
+#prompt:focus {
+  border-color: var(--color-border-focus);
+  background: var(--color-bg);
+  box-shadow:
+    0 0 0 3px var(--color-accent-subtle),
+    0 0 24px -8px var(--color-accent-glow);
+}
+
+/* Controls Row */
+.controls {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+/* Select */
+#engine-select {
+  flex: 0 0 auto;
+  appearance: none;
+  -webkit-appearance: none;
+  height: 44px;
+  padding: 0 2.5rem 0 var(--space-4);
+  background-color: var(--color-bg-elevated);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='[w3.org](http://www.w3.org/2000/svg)' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='none' stroke='%23a1a1b5' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round' d='M3 4.5l3 3 3-3'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right var(--space-3) center;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  color: var(--color-text);
+  font-family: var(--font-sans);
+  font-size: var(--text-sm);
+  font-weight: 500;
+  cursor: pointer;
+  outline: none;
+  transition:
+    border-color var(--duration-fast) var(--ease-out),
+    box-shadow var(--duration-fast) var(--ease-out),
+    background-color var(--duration-fast) var(--ease-out);
+}
+
+#engine-select:hover {
+  border-color: var(--color-border-strong);
+  background-color: var(--color-panel-hover);
+}
+
+#engine-select:focus-visible {
+  border-color: var(--color-border-focus);
+  box-shadow: 0 0 0 3px var(--color-accent-subtle);
+}
+
+#engine-select option {
+  background: var(--color-panel);
+  color: var(--color-text);
+}
+
+/* Primary Button */
+#generate-btn {
+  flex: 1 1 auto;
+  height: 44px;
+  padding: 0 var(--space-5);
+  border: none;
+  border-radius: var(--radius-md);
+  background: var(--gradient-accent);
+  color: #ffffff;
+  font-family: var(--font-sans);
+  font-size: var(--text-base);
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  box-shadow: var(--shadow-sm), inset 0 1px 0 rgba(255, 255, 255, 0.18);
+  transition:
+    transform var(--duration-fast) var(--ease-out),
+    box-shadow var(--duration-base) var(--ease-out),
+    filter var(--duration-base) var(--ease-out);
+}
+
+#generate-btn:hover {
+  filter: brightness(1.12);
+  box-shadow: var(--shadow-accent), inset 0 1px 0 rgba(255, 255, 255, 0.22);
+  transform: translateY(-1px);
+}
+
+#generate-btn:active {
+  transform: translateY(0);
+  filter: brightness(0.96);
+  box-shadow: var(--shadow-sm);
+}
+
+#generate-btn:focus-visible {
+  outline: none;
+  box-shadow:
+    0 0 0 2px var(--color-bg),
+    0 0 0 4px var(--color-accent);
+}
+
+#generate-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+  filter: none;
+  box-shadow: none;
+}
+
+/* ------------------------------------------------------------
+   7. Console Output
+   ------------------------------------------------------------ */
+#status-console {
+  height: 240px;
+  overflow-y: auto;
+  padding: var(--space-4);
+  background: var(--color-console-bg);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  box-shadow: inset 0 2px 12px rgba(0, 0, 0, 0.5);
+  font-family: var(--font-mono);
+  font-size: var(--text-sm);
+  line-height: 1.8;
+  color: var(--color-text-secondary);
+  white-space: pre-wrap;
+  word-break: break-word;
+  overscroll-behavior: contain;
+}
+
+#status-console::-webkit-scrollbar {
+  width: 6px;
+}
+
+#status-console::-webkit-scrollbar-track {
+  background: transparent;
+  margin: var(--space-2) 0;
+}
+
+#status-console::-webkit-scrollbar-thumb {
+  background: var(--color-border-strong);
+  border-radius: var(--radius-full);
+  border: none;
+}
+
+#status-console::-webkit-scrollbar-thumb:hover {
+  background: var(--color-accent);
+}
+
+/* Optional log-line semantic classes */
+#status-console .log-info    { color: var(--color-text-secondary); }
+#status-console .log-success { color: var(--color-success); }
+#status-console .log-warn    { color: var(--color-warning); }
+#status-console .log-error   { color: var(--color-danger); }
+
+#status-console .log-info::before,
+#status-console .log-success::before,
+#status-console .log-warn::before,
+#status-console .log-error::before {
+  content: "› ";
+  color: var(--color-text-muted);
+}
+
+/* ------------------------------------------------------------
+   8. Result / Download Area
+   ------------------------------------------------------------ */
+#result {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+#result a {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  width: 100%;
+  min-height: 52px;
+  padding: var(--space-3) var(--space-6);
+  background: var(--color-success-subtle);
+  border: 1px solid var(--color-success);
+  border-radius: var(--radius-md);
+  color: var(--color-success);
+  font-size: var(--text-md);
+  font-weight: 600;
+  text-decoration: none;
+  letter-spacing: 0.01em;
+  transition:
+    background-color var(--duration-base) var(--ease-out),
+    box-shadow var(--duration-base) var(--ease-out),
+    transform var(--duration-fast) var(--ease-out);
+}
+
+#result a:hover {
+  background: rgba(52, 211, 153, 0.2);
+  box-shadow: 0 4px 24px -6px rgba(52, 211, 153, 0.4);
+  transform: translateY(-1px);
+}
+
+#result a:active {
+  transform: translateY(0);
+}
+
+#result a:focus-visible {
+  outline: none;
+  box-shadow:
+    0 0 0 2px var(--color-bg),
+    0 0 0 4px var(--color-success);
+}
+
+/* ------------------------------------------------------------
+   9. Footer
+   ------------------------------------------------------------ */
+footer {
+  flex: 0 0 auto;
+  padding: var(--space-3) var(--space-5);
+  text-align: center;
+  font-size: var(--text-xs);
+  color: var(--color-text-muted);
+  border-top: 1px solid var(--color-border);
+  background: var(--color-bg-elevated);
+  letter-spacing: 0.02em;
+}
+
+footer a {
+  color: var(--color-text-secondary);
+  text-decoration: none;
+  transition: color var(--duration-fast) var(--ease-out);
+}
+
+footer a:hover {
+  color: var(--color-accent-hover);
+}
+
+/* ------------------------------------------------------------
+   10. Responsive
+   ------------------------------------------------------------ */
+@media (max-width: 1024px) {
+  #app-wrapper {
+    padding: var(--space-6) var(--space-4);
+  }
+}
+
+@media (max-width: 640px) {
+  :root {
+    --text-3xl: 1.875rem;
+  }
+
+  #app-wrapper {
+    padding: var(--space-5) var(--space-4);
+    gap: var(--space-5);
+  }
+
+  .input-card {
+    padding: var(--space-4);
+    border-radius: var(--radius-lg);
+  }
+
+  .controls {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  #engine-select,
+  #generate-btn {
+    width: 100%;
+  }
+
+  #status-console {
+    height: 200px;
+  }
+}
+
+/* ------------------------------------------------------------
+   11. Accessibility
+   ------------------------------------------------------------ */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

@@ -1,0 +1,548 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>AI Asset Fetcher</title>
+    <style>
+        body {
+            font-family: system-ui, sans-serif;
+            background: #111;
+            color: #eee;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+        }
+        .container {
+            max-width: 700px;
+            width: 100%;
+            padding: 24px;
+            background: #1e1e1e;
+            border-radius: 16px;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.6);
+        }
+        h1 {
+            margin-top: 0;
+            font-size: 1.8rem;
+        }
+        .subtitle {
+            color: #aaa;
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+        }
+        .form-row {
+            display: flex;
+            gap: 12px;
+            margin-top: 4px;
+        }
+        .form-row input,
+        .form-row select {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            box-sizing: border-box;
+        }
+        .form-row input {
+            background: #2a2a2a;
+            color: #eee;
+            border: 1px solid #444;
+        }
+        .form-row input:focus {
+            outline: 2px solid #4a6cf7;
+            border-color: transparent;
+        }
+        .form-row select {
+            background: #2a2a2a;
+            color: #eee;
+            border: 1px solid #444;
+            flex: 0 0 160px;
+            cursor: pointer;
+        }
+        .form-row select:focus {
+            outline: 2px solid #4a6cf7;
+            border-color: transparent;
+        }
+        .hint {
+            font-size: 0.85rem;
+            color: #999;
+            margin-top: 6px;
+            font-style: italic;
+        }
+        button {
+            width: 100%;
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            background: #4a6cf7;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 16px;
+            transition: background 0.2s;
+            box-sizing: border-box;
+        }
+        button:hover {
+            background: #5a7df7;
+        }
+        button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+        .section-divider {
+            border: none;
+            border-top: 1px solid #444;
+            margin: 24px 0;
+        }
+        .resume-section {
+            display: flex;
+            gap: 12px;
+            margin-top: 12px;
+        }
+        .resume-section input {
+            flex: 1;
+            padding: 10px;
+            border: none;
+            border-radius: 8px;
+            background: #2a2a2a;
+            color: #eee;
+            border: 1px solid #444;
+        }
+        .resume-section input:focus {
+            outline: 2px solid #4a6cf7;
+            border-color: transparent;
+        }
+        .resume-section button {
+            flex: 0 0 auto;
+            padding: 10px 20px;
+            margin-top: 0;
+            width: auto;
+        }
+        #job-id-display {
+            margin-top: 12px;
+            padding: 10px;
+            background: #2a2a2a;
+            border-radius: 8px;
+            border-left: 4px solid #4af76a;
+            display: none;
+            font-size: 0.95rem;
+        }
+        #job-id-display strong {
+            color: #4af76a;
+        }
+        #queue-position {
+            margin-top: 16px;
+            padding: 12px;
+            background: #2a2a2a;
+            border-radius: 8px;
+            border-left: 4px solid #f7c94a;
+            display: none;
+        }
+        #status-console {
+            margin-top: 16px;
+            padding: 12px;
+            background: #2a2a2a;
+            border-radius: 8px;
+            max-height: 200px;
+            overflow-y: auto;
+            font-family: monospace;
+            font-size: 0.9rem;
+            white-space: pre-wrap;
+            display: none;
+            border-left: 4px solid #4a6cf7;
+        }
+        #progress-container {
+            margin-top: 16px;
+            display: none;
+        }
+        .progress-bar-bg {
+            width: 100%;
+            height: 20px;
+            background: #333;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        #progress-bar-fill {
+            height: 100%;
+            width: 0%;
+            background: #4a6cf7;
+            transition: width 0.3s;
+            border-radius: 10px;
+        }
+        #progress-text {
+            margin-top: 4px;
+            font-size: 0.85rem;
+            color: #aaa;
+        }
+        #result {
+            margin-top: 20px;
+            display: none;
+            text-align: center;
+        }
+        #result a {
+            color: #4a6cf7;
+            font-weight: bold;
+            text-decoration: none;
+            padding: 10px 20px;
+            background: #2a2a2a;
+            border-radius: 8px;
+            border: 1px solid #4a6cf7;
+            transition: all 0.2s;
+        }
+        #result a:hover {
+            background: #4a6cf7;
+            color: #fff;
+        }
+        .error {
+            border-left-color: #f74a4a !important;
+        }
+        .success {
+            border-left-color: #4af76a !important;
+        }
+        .deprecation-note {
+            margin-top: 16px;
+            padding: 10px;
+            background: #3a2a2a;
+            border-radius: 8px;
+            border-left: 4px solid #f7c94a;
+            color: #f7c94a;
+            font-size: 0.9rem;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎮 AI Asset Fetcher</h1>
+        <p class="subtitle">
+            Describe your scene, and the AI will generate assets + starter scripts for your game engine.
+        </p>
+
+        <form id="assetForm">
+            <label for="prompt">Scene Description</label>
+            <div class="form-row">
+                <input type="text" id="prompt" placeholder="e.g. modern rooftop parkour game with low-poly style" required />
+                <select id="engine-select">
+                    <option value="Unity">Unity (C#)</option>
+                    <option value="Godot">Godot (GDScript)</option>
+                    <option value="Three.js">Three.js (JavaScript)</option>
+                </select>
+            </div>
+            <div class="hint">Tip: For a full game MVP, the AI will generate 200-400+ assets and 15-30 scripts.</div>
+            <button type="submit" id="generateBtn">✨ Generate Assets + Scripts</button>
+        </form>
+
+        <div id="job-id-display">
+            📋 Your Job ID: <strong id="job-id-value">---</strong>.
+            <span style="color:#aaa; font-size:0.85rem;">Save this in case you disconnect!</span>
+        </div>
+
+        <hr class="section-divider" />
+
+        <h3 style="margin-top:0;">Resume a Job</h3>
+        <div class="resume-section">
+            <input type="text" id="resume-id-input" placeholder="Enter Job ID (e.g., abc123)" />
+            <button id="resume-btn">↻ Resume</button>
+        </div>
+
+        <div id="queue-position">⏳ You are #<span id="queue-number">0</span> in line. Please wait...</div>
+
+        <div id="progress-container">
+            <div class="progress-bar-bg">
+                <div id="progress-bar-fill" style="width: 0%;"></div>
+            </div>
+            <div id="progress-text">0 / 0</div>
+        </div>
+
+        <div id="status-console"></div>
+
+        <div id="result">
+            <a href="#" id="download-link" download>⬇️ Download Asset Pack & Scripts (.zip)</a>
+        </div>
+
+        <div id="deprecation-note" class="deprecation-note">
+            ⚠️ The old /api/fetch endpoint is deprecated. Please refresh the page to use the new WebSocket version.
+        </div>
+    </div>
+
+    <script>
+        const form = document.getElementById('assetForm');
+        const promptInput = document.getElementById('prompt');
+        const engineSelect = document.getElementById('engine-select');
+        const generateBtn = document.getElementById('generateBtn');
+
+        const resumeInput = document.getElementById('resume-id-input');
+        const resumeBtn = document.getElementById('resume-btn');
+
+        const jobIdDisplay = document.getElementById('job-id-display');
+        const jobIdValue = document.getElementById('job-id-value');
+
+        const queuePosition = document.getElementById('queue-position');
+        const queueNumber = document.getElementById('queue-number');
+        const progressContainer = document.getElementById('progress-container');
+        const progressFill = document.getElementById('progress-bar-fill');
+        const progressText = document.getElementById('progress-text');
+        const statusConsole = document.getElementById('status-console');
+        const resultDiv = document.getElementById('result');
+        const downloadLink = document.getElementById('download-link');
+        const deprecationNote = document.getElementById('deprecation-note');
+
+        const STORAGE_KEY = 'current_job_id';
+
+        let ws = null;
+        let currentJobId = null;
+
+        function appendLog(message) {
+            const line = document.createElement('div');
+            line.textContent = message;
+            statusConsole.appendChild(line);
+            statusConsole.scrollTop = statusConsole.scrollHeight;
+        }
+
+        function resetUI() {
+            queuePosition.style.display = 'none';
+            progressContainer.style.display = 'none';
+            statusConsole.style.display = 'none';
+            resultDiv.style.display = 'none';
+            jobIdDisplay.style.display = 'none';
+            statusConsole.innerHTML = '';
+            progressFill.style.width = '0%';
+            progressText.textContent = '0 / 0';
+            generateBtn.disabled = false;
+            generateBtn.textContent = '✨ Generate Assets + Scripts';
+            deprecationNote.style.display = 'none';
+            currentJobId = null;
+            localStorage.removeItem(STORAGE_KEY);
+        }
+
+        function setProgress(percent, current, total) {
+            progressContainer.style.display = 'block';
+            progressFill.style.width = percent + '%';
+            progressText.textContent = `${current} / ${total}`;
+        }
+
+        function handleWebSocketMessages(data) {
+            console.log('[WS]', data);
+            switch (data.type) {
+                case 'job_id':
+                    currentJobId = data.id;
+                    jobIdValue.textContent = data.id;
+                    jobIdDisplay.style.display = 'block';
+                    localStorage.setItem(STORAGE_KEY, data.id);
+                    break;
+
+                case 'queue':
+                    queuePosition.style.display = 'block';
+                    queueNumber.textContent = data.position;
+                    break;
+
+                case 'log':
+                    queuePosition.style.display = 'none';
+                    statusConsole.style.display = 'block';
+                    appendLog(data.message);
+                    break;
+
+                case 'progress':
+                    queuePosition.style.display = 'none';
+                    statusConsole.style.display = 'block';
+                    progressContainer.style.display = 'block';
+                    setProgress(data.percent, data.current, data.total);
+                    if (data.message) {
+                        appendLog(data.message);
+                    }
+                    break;
+
+                case 'done':
+                    resultDiv.style.display = 'block';
+                    downloadLink.href = data.url;
+                    const filename = data.url.split('/').pop();
+                    downloadLink.download = filename;
+                    statusConsole.style.borderLeftColor = '#4af76a';
+                    appendLog('✅ Done! Asset pack ready.');
+                    localStorage.removeItem(STORAGE_KEY);
+                    generateBtn.disabled = false;
+                    generateBtn.textContent = '✨ Generate Assets + Scripts';
+                    if (ws) {
+                        ws.close();
+                        ws = null;
+                    }
+                    break;
+
+                case 'error':
+                    statusConsole.style.display = 'block';
+                    statusConsole.style.borderLeftColor = '#f74a4a';
+                    appendLog('❌ Error: ' + data.message);
+                    localStorage.removeItem(STORAGE_KEY);
+                    generateBtn.disabled = false;
+                    generateBtn.textContent = '✨ Generate Assets + Scripts';
+                    if (ws) {
+                        ws.close();
+                        ws = null;
+                    }
+                    break;
+
+                case 'ping':
+                    // Ignore pings; we keep the connection alive with a timeout loop
+                    break;
+
+                default:
+                    appendLog('📦 ' + JSON.stringify(data));
+            }
+        }
+
+        function connectWebSocket(url) {
+            return new Promise((resolve, reject) => {
+                const socket = new WebSocket(url);
+                socket.onopen = () => resolve(socket);
+                socket.onerror = (err) => reject(err);
+                socket.onclose = () => reject(new Error('Connection closed'));
+            });
+        }
+
+        function startNewGeneration(prompt, engine) {
+            resetUI();
+            generateBtn.disabled = true;
+            generateBtn.textContent = '⏳ Connecting...';
+            jobIdDisplay.style.display = 'none';
+
+            const wsProtocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+            const wsUrl =
+                `${wsProtocol}//${window.location.host}/ws/generate?prompt=${encodeURIComponent(prompt)}&engine=${encodeURIComponent(engine)}`;
+
+            const socket = new WebSocket(wsUrl);
+            ws = socket;
+
+            socket.onopen = () => {
+                generateBtn.textContent = '⏳ Generating...';
+            };
+
+            socket.onmessage = (event) => {
+                try {
+                    const data = JSON.parse(event.data);
+                    handleWebSocketMessages(data);
+                } catch (err) {
+                    appendLog('⚠️ Error parsing message: ' + err.message);
+                }
+            };
+
+            socket.onerror = (error) => {
+                statusConsole.style.display = 'block';
+                statusConsole.style.borderLeftColor = '#f74a4a';
+                appendLog('❌ WebSocket error: ' + (error.message || 'Unknown error'));
+                generateBtn.disabled = false;
+                generateBtn.textContent = '✨ Generate Assets + Scripts';
+                deprecationNote.style.display = 'block';
+                localStorage.removeItem(STORAGE_KEY);
+            };
+
+            socket.onclose = () => {
+                generateBtn.disabled = false;
+                generateBtn.textContent = '✨ Generate Assets + Scripts';
+            };
+        }
+
+        function resumeJob(jobId) {
+            resetUI();
+            generateBtn.disabled = true;
+            generateBtn.textContent = '⏳ Resuming...';
+            statusConsole.style.display = 'block';
+            appendLog('🔄 Resuming job ' + jobId + '...');
+
+            const wsProtocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+            const wsUrl =
+                `${wsProtocol}//${window.location.host}/ws/generate?job_id=${encodeURIComponent(jobId)}`;
+
+            const socket = new WebSocket(wsUrl);
+            ws = socket;
+
+            socket.onopen = () => {
+                generateBtn.textContent = '⏳ Resuming...';
+            };
+
+            socket.onmessage = (event) => {
+                try {
+                    const data = JSON.parse(event.data);
+                    handleWebSocketMessages(data);
+                } catch (err) {
+                    appendLog('⚠️ Error parsing message: ' + err.message);
+                }
+            };
+
+            socket.onerror = (error) => {
+                statusConsole.style.display = 'block';
+                statusConsole.style.borderLeftColor = '#f74a4a';
+                appendLog('❌ Resume error: ' + (error.message || 'Unknown error'));
+                generateBtn.disabled = false;
+                generateBtn.textContent = '✨ Generate Assets + Scripts';
+                localStorage.removeItem(STORAGE_KEY);
+            };
+
+            socket.onclose = () => {
+                generateBtn.disabled = false;
+                generateBtn.textContent = '✨ Generate Assets + Scripts';
+            };
+        }
+
+        // On page load, check for saved job ID
+        window.addEventListener('load', () => {
+            const savedJobId = localStorage.getItem(STORAGE_KEY);
+            if (savedJobId) {
+                // If the saved ID is longer than 6 characters, it's an old UUID – clear it
+                if (savedJobId.length !== 6) {
+                    localStorage.removeItem(STORAGE_KEY);
+                } else {
+                    resumeJob(savedJobId);
+                }
+            }
+        });
+
+        // When user clicks download, clear the saved ID so it doesn't recover again
+        downloadLink.addEventListener('click', () => {
+            localStorage.removeItem(STORAGE_KEY);
+        });
+
+        // Form submission (new generation)
+        form.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const prompt = promptInput.value.trim();
+            const engine = engineSelect.value;
+            if (!prompt) return;
+
+            // If there's already a job running, confirm
+            if (localStorage.getItem(STORAGE_KEY)) {
+                if (!confirm('You have an ongoing job. Starting a new one will cancel the old one. Continue?')) {
+                    return;
+                }
+                localStorage.removeItem(STORAGE_KEY);
+            }
+
+            startNewGeneration(prompt, engine);
+        });
+
+        // Resume button
+        resumeBtn.addEventListener('click', () => {
+            const jobId = resumeInput.value.trim();
+            if (!jobId) {
+                alert('Please enter a Job ID');
+                return;
+            }
+            resumeJob(jobId);
+        });
+
+        // Allow Enter key on resume input
+        resumeInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                resumeBtn.click();
+            }
+        });
+    </script>
+</body>
+</html>
